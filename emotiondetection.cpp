@@ -1,35 +1,45 @@
 /*
- * Copyright 2017 Open University of the Netherlands (OUNL)
- *
- * Author: Kiavash Bahreini.
- * Organization: Open University of the Netherlands (OUNL).
- * Project: The RAGE project
- * Project URL: http://rageproject.eu.
- * Task: T2.3 of the RAGE project; Development of assets for emotion detection. 
- * 
- * For any questions please contact: 
- *
- * Kiavash Bahreini via kiavash.bahreini [AT] ou [DOT] nl
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * This project has received funding from the European Union’s Horizon
- * 2020 research and innovation programme under grant agreement No 644187.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Facial Emotion Recognition in C++ versions 2.0 (Updated on Monday 11 June 2018).
+*
+* Emotion recognition is done based on facial expressions using image files and the webcam.  
+* 
+* Copyright 2017 Open University of the Netherlands (OUNL)
+*
+* Author: Kiavash Bahreini.
+* Organization: Open University of the Netherlands (OUNL).
+* Project: The RAGE project
+* Project URL: http://rageproject.eu.
+* Task: T2.3 of the RAGE project; Development of assets for emotion detection.
+*
+* For any questions please contact:
+*
+* Kiavash Bahreini via kiavash.bahreini [AT] ou [DOT] nl
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* This project has received funding from the European Union’s Horizon
+* 2020 research and innovation programme under grant agreement No 644187.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 /*
 * This code is based on the dlib c++ library.
 *
 * URL: http://dlib.net/.
+*/
+
+/*
+* In order to capture the video from a camera this code uses
+* the Opencv version 2.4.11 and/or higher.
+* URL: https://sourceforge.net/projects/opencvlibrary/files/opencv-win/
 */
 
 #include <dlib/image_processing/frontal_face_detector.h>
@@ -45,17 +55,13 @@
 //To capture the video from a camera
 #include "C:\opencv-2.4.11\opencv\sources\modules\core\include\opencv2\highgui\highgui.hpp"
 
-// #include "C:\Users\kbh\Desktop\FaceEmotionDetection&DatasetTraining\FaceEmotionDetection2016-March-01\src\lib\Tracker.h"
 #include <dlib/image_transforms.h>
 #include <dlib/image_processing/render_face_detections_lines.h>
 
 using namespace dlib;
 using namespace std;
-//using namespace FACETRACKER;
-
 
 // ----------------------------------------------------------------------------------------
-
 // See http://stackoverflow.com/questions/876901/calculating-execution-time-in-c
 #ifndef SYSOUT_F
 #define SYSOUT_F(f, d) cout << f << std::setprecision (3) << (int)(d * 1000.0) << "ms" << endl // For Visual studio
@@ -64,6 +70,8 @@ using namespace std;
 #ifndef speedtest___             
 #define speedtest___(data)   for (long blockTime = NULL; (blockTime == NULL ? (blockTime = clock()) != NULL : false); SYSOUT_F(data, (double) (clock() - blockTime) / CLOCKS_PER_SEC))
 #endif
+
+int webcam();
 // ----------------------------------------------------------------------------------------
 long double calculateEuclideanDistance(const short int x, const short int y, const short int a, const short int b) {
 	//Solution: http://www.cut-the-knot.org/pythagoras/DistanceFormula.shtml
@@ -229,15 +237,22 @@ int main(int argc, char** argv)
 		// process.  We will take these filenames in as command line arguments.
 		// Dlib comes with example images in the examples/faces folder so give
 		// those as arguments to this program.
-//		if (argc == 1)
-//		{
-//			std::cout << "Call this program like this:" << endl;
-//			std::cout << "./face_landmark_detection_ex shape_predictor_68_face_landmarks.dat faces/*.jpg" << endl;
-//			std::cout << "\nYou can get the shape_predictor_68_face_landmarks.dat file from:\n";
-//			std::cout << "http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2" << endl;
-//			return 0;
-//		}
+		//if (argc == 1)
+		//{
+			//std::cout << "Call this program like this:" << endl;
+			//std::cout << "./face_landmark_detection_ex shape_predictor_68_face_landmarks.dat faces/*.jpg" << endl;
+			//std::cout << "\nYou can get the shape_predictor_68_face_landmarks.dat file from:\n";
+			//std::cout << "http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2" << endl;
+			//return 0;
+		//}
 
+		
+		// You may disable this line ("//int returnFromWebcam = webcam();") 
+		// if you would like to recognise emotions from image files.
+		// Otherwise, this line will use your webcam to show you the feedback
+		// based on your facial expressions in real-time mode.
+		//int returnFromWebcam = webcam();
+		
 		clock_t tStart = clock();
 
 		// We need a face detector.  We will use this to get bounding boxes for
@@ -262,7 +277,7 @@ int main(int argc, char** argv)
 		// Loop over all the images provided on the command line.
 		for (int i = 2; i < 3; ++i)
 		{
-			std::cout << "processing image " << "C:\\Users\\kbh\\Desktop\\Emotion and CK+\\cohn-kanade-images\\S005\\001\\S005_001_00000011.png" << endl;
+			//std::cout << "processing image " << "C:\\Users\\kbh\\Desktop\\Emotion and CK+\\cohn-kanade-images\\S005\\001\\S005_001_00000011.png" << endl;
 			array2d<rgb_pixel> img;
 
 			//			std::ifstream file("C:\\Users\\kbh\\Desktop\\Emotion and CK+\\List of files sorted by emotions.txt");
@@ -352,9 +367,6 @@ int main(int argc, char** argv)
 						std::cout << "pixel position of first part:  " << shape.part(0) << " " << shape.part(0).x() << " " << shape.part(0).y() << endl;
 						std::cout << "pixel position of second part: " << shape.part(1) << endl;
 
-						////////////////////////////////////////////////////////////////
-						////////////////////////////////////////////////////////////////
-						////////////////////////////////////////////////////////////////
 						////////////////////////////////////////////////////////////////
 						std::ofstream fout("EmotionsDataset.txt", ofstream::app);
 						if (!fout)
@@ -783,7 +795,7 @@ int main(int argc, char** argv)
 // ----------------------------------------------------------------------------------------
 
 // -------------------------
-int main_Kiavash(int argc, char** argv)
+int webcam()
 {
 
 	try
@@ -818,48 +830,486 @@ int main_Kiavash(int argc, char** argv)
 			//Rotate cimg to img
 			array2d<rgb_pixel> img;
 			assign_image(img, cimg);
-			flip_image_left_right(cimg, img);
+			flip_image_left_right(cimg, img); //You can use img insted of cimg to rotate the image
 
-			//Use img insted of cimg to rotate the image
 
+
+			full_object_detection shape;
+			
 			// Detect faces
 			std::vector<rectangle> faces = detector(img);
+
 			// Find the pose of each face.
 			std::vector<full_object_detection> shapes;
-			for (unsigned long i = 0; i < faces.size(); ++i)
+			for (unsigned long i = 0; i < faces.size(); ++i) {
 				shapes.push_back(pose_model(img, faces[i]));
+				shape = pose_model(img, faces[i]);
+			}
 
-			//cout << "" << faces[0];
-			//unsigned long height1 = faces[0].height;
 			// Display it all on the screen
 			win.clear_overlay();
 			win.set_image(img);
+			// Array of the emotions to display
+			string emotions[7] = {"Happy", "Sad", "Surprise", "Fear", "Disgust", "Anger", "Neutral"};
+			//To display the timestamp of each emotion
+			time_t  timev;
+
+			// A pointer to a long double to calculate the euclidean distance between the landmark points.
+			const long double *EuclideanDistanceArrayPointer;
+			EuclideanDistanceArrayPointer = setPointsToCalculateEuclideanDistance(shape);
+
+			// A pointer to a long double to calculate the cosines between the three sides of the triangle.
+			const long double *CosinesArrayPointer;
+			CosinesArrayPointer = callCalculateCosines(EuclideanDistanceArrayPointer);
+
+			// A pointer to a long double to calculate the arc cosines of the angles.
+			const long double *ArcCosinesArrayPointer;
+			ArcCosinesArrayPointer = callCalculateArcCosines(CosinesArrayPointer);
+
+			////////////////////////////////////////////////////////////////
+			//*(ArcCosinesArrayPointer + i)
+			const long double *R = ArcCosinesArrayPointer;
+			//Happy
+			//Rule 1
+			if (
+				((*(R + 30) >= 159.608 && *(R + 30) <= 160.424) || (*(R + 30) >= 160.424))
+				&& (!(*(R + 30) >= 160.168 && *(R + 30) <= 160.675) || (!*(R + 30) <= 160.168))
+				&& ((*(R + 35) >= 30.0655 && *(R + 35) <= 30.2536) || (*(R + 35) >= 30.2536
+					&& (!(*(R + 35) > 30.2536 && *(R + 35) <= 32.685))))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Happy(CF = 0.97)" << endl;
+				dlib::rectangle rr(long(0), long(0), long(0), long(0));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[0].append("  0.97")));
+
+			}
+			//Rule 2
+			if (
+				((*(R + 31) >= 9.85016 && *(R + 31) <= 9.96286) || (*(R + 31) <= 9.85016))
+				&& ((*(R + 51) >= 35.5078 && *(R + 51) <= 35.5856) || (*(R + 31) >= 35.5856))
+				&& ((*(R + 10) >= 22.9748 && *(R + 10) <= 23.0757) || (*(R + 10) <= 23.0757))
+				&& ((*(R + 0) >= 24.8358 && *(R + 0) <= 24.9599) || (*(R + 0) <= 24.8358))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Happy(CF = 0.98)" << endl;
+				dlib::rectangle rr(long(0), long(0), long(0), long(0));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[0].append("  0.98")));
+			}
+			//Rule 3
+			if (
+				((*(R + 32) >= 13.8022 && *(R + 32) <= 14.6793) || (*(R + 32) <= 13.8022))
+				&& ((*(R + 34) >= 25.1647 && *(R + 34) <= 25.4542) || (*(R + 34) >= 25.4542))
+				&& ((*(R + 50) >= 3.7724 && *(R + 50) <= 3.79234) || (*(R + 50) >= 3.79234))
+				&& ((*(R + 48) >= 64.551 && *(R + 48) <= 66.8476) || (*(R + 48) >= 66.8476))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Happy(CF = 0.90)" << endl;
+				dlib::rectangle rr(long(0), long(0), long(0), long(0));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[0].append("  0.90")));
+
+			}
+			//Rule 4
+			if (
+				((*(R + 31) >= 12.4074 && *(R + 31) <= 16.2636) || (*(R + 31) <= 12.4074))
+				&& ((*(R + 35) >= 25.6426 && *(R + 35) <= 27.0878) || (*(R + 35) >= 25.0878))
+				&& ((*(R + 37) >= 21.4168 && *(R + 37) <= 21.5797) || (*(R + 37) >= 21.5797))
+				&& ((*(R + 0) >= 21.1748 && *(R + 0) <= 21.9187) || (*(R + 0) <= 21.1748))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Happy(CF = 0.95)" << endl;
+				dlib::rectangle rr(long(0), long(0), long(0), long(0));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[0].append("  0.95")));
+
+			}
+			//Rule 5
+			if (
+				((*(R + 32) >= 5.15255 && *(R + 32) <= 5.16574) || (*(R + 32) <= 5.15255))
+				&& ((*(R + 32) >= 4.97626 && *(R + 32) <= 5.05265) || (*(R + 32) >= 5.05265))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Happy(CF = 0.66)" << endl;
+				dlib::rectangle rr(long(0), long(0), long(0), long(0));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[0].append("  0.66")));
+
+			}
+			//Sad
+			//Rule 6
+			if (
+				((*(R + 34) >= 15.1591 && *(R + 34) <= 15.3646) || (*(R + 34) >= 15.1591))
+				&& ((*(R + 42) >= 73.6283 && *(R + 42) <= 74.5163) || (*(R + 42) <= 73.6283))
+				&& ((*(R + 32) >= 17.9646 && *(R + 32) <= 17.9917) || (*(R + 32) >= 17.9917))
+				&& ((*(R + 13) >= 68.61 && *(R + 13) <= 70.3929) || (*(R + 13) >= 70.3929))
+				&& ((*(R + 37) >= 22.5483 && *(R + 37) <= 22.8643) || (*(R + 37) <= 22.5483))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Sad(CF = 0.94)" << endl;
+				dlib::rectangle rr(long(0), long(50), long(0), long(50));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[1].append("  0.94")));
+
+			}
+			//Rule 7
+			if (
+				((*(R + 33) >= 142.341 && *(R + 33) <= 142.606) || (*(R + 33) >= 142.606))
+				&& ((*(R + 44) >= 51.9081 && *(R + 44) <= 52.9607) || (*(R + 44) >= 52.9607))
+				&& ((*(R + 50) >= 3.15842 && *(R + 50) <= 3.18719) || (*(R + 50) <= 3.15842))
+				&& ((*(R + 31) >= 14.1431 && *(R + 31) <= 14.4425) || (*(R + 31) >= 14.4425))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Sad(CF = 0.82)" << endl;
+				dlib::rectangle rr(long(0), long(20), long(0), long(20));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[1].append("  0.82")));
+
+			}
+			//Rule 8
+			if (
+				((*(R + 46) >= 84.9609 && *(R + 46) <= 85.074) || (*(R + 46) <= 84.9609))
+				&& ((*(R + 51) >= 36.248 && *(R + 51) <= 36.6846) || (*(R + 51) >= 36.6846))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Sad(CF = 0.81)" << endl;
+				dlib::rectangle rr(long(0), long(20), long(0), long(20));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[1].append("  0.81")));
+
+			}
+			//Rule 9
+			if (
+				((*(R + 42) >= 54.362 && *(R + 42) <= 54.4623) || (*(R + 42) <= 54.362))
+				&& ((*(R + 3) >= 49.4672 && *(R + 3) <= 53.9726) || (*(R + 3) >= 53.9726))
+				&& ((*(R + 18) >= 48.7314 && *(R + 18) <= 48.7806) || (*(R + 18) >= 48.7806))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Sad(CF = 0.84)" << endl;
+				dlib::rectangle rr(long(0), long(20), long(0), long(20));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[1].append("  0.84")));
+
+			}
+			//Rule 10
+			if (
+				((*(R + 1) >= 6.82602 && *(R + 1) <= 7.03498) || (*(R + 1) <= 6.82602))
+				&& ((*(R + 15) >= 14.5889 && *(R + 15) <= 15.0512) || (*(R + 15) >= 15.0512))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Sad(CF = 0.53)" << endl;
+				dlib::rectangle rr(long(0), long(20), long(0), long(20));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[1].append("  0.53")));
+
+			}
+			//Surprise
+			//Rule 11
+			if (
+				((*(R + 30) >= 126.304 && *(R + 30) <= 149.554) || (*(R + 30) <= 126.304))
+				&& ((*(R + 34) >= 33.9611 && *(R + 34) <= 34.0477) || (*(R + 34) >= 34.0477))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Surprise(CF = 0.99)" << endl;
+				dlib::rectangle rr(long(0), long(40), long(0), long(40));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[2].append("  0.99")));
+			}
+			//Rule 12
+			if (
+				((*(R + 8) >= 40.2461 && *(R + 8) <= 40.3331) || (*(R + 8) >= 40.3331))
+				&& ((*(R + 51) >= 45.1865 && *(R + 51) <= 45.2721) || (*(R + 30) <= 45.1865))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Surprise(CF = 0.98)" << endl;
+				dlib::rectangle rr(long(0), long(40), long(0), long(40));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[2].append("  0.98")));
+
+			}
+			//Rule 13
+			if (
+				((*(R + 17) >= 17.0409 && *(R + 17) <= 17.0477) || (*(R + 17) >= 17.0477))
+				&& ((*(R + 17) >= 17.1027 && *(R + 17) <= 17.1054) || (*(R + 17) <= 17.1027))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Surprise(CF = 0.68)" << endl;
+				dlib::rectangle rr(long(0), long(40), long(0), long(40));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[2].append("  0.68")));
+			}
+			//Rule 14
+			if (
+				((*(R + 48) >= 42.3974 && *(R + 48) <= 43.2472) || (*(R + 48) <= 42.3974))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Surprise(CF = 0.60)" << endl;
+				dlib::rectangle rr(long(0), long(40), long(0), long(40));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[2].append("  0.60")));
+			}
+			//Fear
+			//Rule 15
+			if (
+				((*(R + 26) >= 38.6598 && *(R + 26) <= 40.2364) || (*(R + 26) >= 40.2364))
+				&& ((*(R + 50) >= 3.61388 && *(R + 50) <= 3.62035) || (*(R + 50) >= 3.62035))
+				&& ((*(R + 19) >= 86.8202 && *(R + 19) <= 87.1376) || (*(R + 19) >= 87.1376))
+				&& ((*(R + 32) >= 22.3228 && *(R + 32) <= 22.4199) || (*(R + 32) <= 22.3228))
+				&& ((*(R + 44) >= 48.7314 && *(R + 44) <= 48.8141) || (*(R + 44) >= 48.8141))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Fear(CF = 0.90)" << endl;
+				dlib::rectangle rr(long(0), long(60), long(0), long(60));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[3].append("  0.90")));
+
+			}
+			//Rule 16
+			if (
+				((*(R + 49) >= 95.8395 && *(R + 49) <= 96.2791) || (*(R + 49) <= 95.8395))
+				&& ((*(R + 49) >= 93.3419 && *(R + 49) <= 94.0108) || (*(R + 49) >= 94.0108))
+				&& ((*(R + 8) >= 35.0195 && *(R + 8) <= 35.6748) || (*(R + 8) >= 35.6748))
+				&& ((*(R + 30) >= 112.548 && *(R + 30) <= 127.911) || (*(R + 30) >= 127.911))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Fear(CF = 0.84)" << endl;
+				dlib::rectangle rr(long(0), long(60), long(0), long(60));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[3].append("  0.84")));
+			}
+			//Rule 17
+			if (
+				((*(R + 33) >= 113.647 && *(R + 33) <= 120.77) || (*(R + 33) >= 120.77))
+				&& ((*(R + 35) >= 19.8265 && *(R + 35) <= 20.2393) || (*(R + 35) >= 20.2393))
+				&& ((*(R + 22) >= 41.6335 && *(R + 22) <= 41.8665) || (*(R + 22) >= 41.8665))
+				&& ((*(R + 51) >= 34.8844 && *(R + 51) <= 35.0913) || (*(R + 51) >= 35.0913))
+				&& ((*(R + 12) >= 56.658 && *(R + 12) <= 56.7193) || (*(R + 12) <= 56.658))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Fear(CF = 0.87)" << endl;
+				dlib::rectangle rr(long(0), long(60), long(0), long(60));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[3].append("  0.87")));
+			}
+			//Disgust
+			//Rule 18
+			if (
+				((*(R + 26) >= 26.9489 && *(R + 26) <= 27.5973) || (*(R + 26) <= 26.9489))
+				&& ((*(R + 8) >= 25.3267 && *(R + 8) <= 26.1046) || (*(R + 8) <= 25.3267))
+				&& ((*(R + 21) >= 59.7436 && *(R + 21) <= 60.0864) || (*(R + 21) >= 60.0864))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Disgust(CF = 0.96)" << endl;
+				dlib::rectangle rr(long(0), long(80), long(0), long(80));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[4].append("  0.96")));
+
+			}
+			//Rule 19
+			if (
+				((*(R + 26) >= 35.8377 && *(R + 26) <= 36.2538) || (*(R + 26) <= 35.8377))
+				&& ((*(R + 30) >= 151.318 && *(R + 30) <= 151.76) || (*(R + 30) <= 151.76))
+				&& ((*(R + 35) >= 18.6981 && *(R + 35) <= 18.7149) || (*(R + 35) >= 18.7149))
+				&& ((*(R + 8) >= 25.9913 && *(R + 8) <= 26.0754) || (*(R + 8) <= 25.9913))
+				&& ((*(R + 50) >= 3.1012 && *(R + 50) <= 3.21448) || (*(R + 50) >= 3.21448))
+				&& ((*(R + 51) >= 40.4826 && *(R + 51) <= 40.6054) || (*(R + 51) <= 40.4826))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Disgust(CF = 0.96)" << endl;
+				dlib::rectangle rr(long(0), long(80), long(0), long(80));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[4].append("  0.96")));
+			}
+			//Rule 20
+			if (
+				((*(R + 26) >= 35.4509 && *(R + 26) <= 35.8195) || (*(R + 26) <= 35.4509))
+				&& ((*(R + 30) >= 160.168 && *(R + 30) <= 160.675) || (*(R + 30) <= 160.168))
+				&& ((*(R + 42) >= 91.4652 && *(R + 42) <= 91.8476) || (*(R + 42) >= 91.8476))
+				&& ((*(R + 9) >= 28.8713 && *(R + 9) <= 31.4661) || (*(R + 9) >= 31.4661))
+				&& ((*(R + 16) >= 151.557 && *(R + 16) <= 151.794) || (*(R + 16) <= 151.557))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Disgust(CF = 0.94)" << endl;
+				dlib::rectangle rr(long(0), long(80), long(0), long(80));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[4].append("  0.94")));
+			}
+			//Rule 21
+			if (
+				((*(R + 28) >= 38.1572 && *(R + 28) <= 38.3107) || (*(R + 28) <= 38.1572))
+				&& ((*(R + 31) >= 7.43669 && *(R + 31) <= 10.1433) || (*(R + 31) >= 10.1433))
+				&& ((*(R + 26) >= 30.9638 && *(R + 26) <= 31.4521) || (*(R + 26) <= 30.9638))
+				&& ((*(R + 4) >= 46.4321 && *(R + 4) <= 46.5831) || (*(R + 4) <= 46.4321))
+				&& ((*(R + 45) >= 74.4759 && *(R + 45) <= 75.0686) || (*(R + 45) >= 75.0686))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Disgust(CF = 0.94)" << endl;
+				dlib::rectangle rr(long(0), long(80), long(0), long(80));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[4].append("  0.94")));
+			}
+			//Rule 22
+			if (
+				((*(R + 28) >= 38.1572 && *(R + 28) <= 38.3782) || (*(R + 28) <= 38.1572))
+				&& ((*(R + 32) >= 8.70181 && *(R + 32) <= 8.71473) || (*(R + 32) >= 8.71473))
+				&& ((*(R + 9) >= 35.9909 && *(R + 9) <= 36.1861) || (*(R + 9) >= 36.1861))
+				&& ((*(R + 8) >= 27.817 && *(R + 8) <= 27.929) || (*(R + 8) <= 27.817))
+				&& ((*(R + 14) >= 46.8177 && *(R + 14) <= 47.5595) || (*(R + 14) <= 46.8177))
+				&& ((*(R + 8) >= 17.2892 && *(R + 8) <= 18.9069) || (*(R + 8) >= 18.9069))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Disgust(CF = 0.93)" << endl;
+				dlib::rectangle rr(long(0), long(80), long(0), long(80));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[4].append("  0.93")));
+			}
+			//Rule 23
+			if (
+				((*(R + 28) >= 38.1572 && *(R + 28) <= 39.6233) || (*(R + 28) <= 38.1572))
+				&& ((*(R + 32) >= 15.3773 && *(R + 32) <= 15.6442) || (*(R + 32) >= 15.6442))
+				&& ((*(R + 23) >= 90 && *(R + 23) <= 92.4002) || (*(R + 23) <= 90))
+				&& ((*(R + 6) >= 34.6599 && *(R + 6) <= 35.2154) || (*(R + 6) >= 35.2154))
+				&& ((*(R + 2) >= 144.482 && *(R + 2) <= 144.492) || (*(R + 2) >= 144.492))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Disgust(CF = 0.90)" << endl;
+				dlib::rectangle rr(long(0), long(80), long(0), long(80));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[4].append("  0.90")));
+			}
+			//Rule 24
+			if (
+				((*(R + 10) >= 26.4547 && *(R + 10) <= 27.2133) || (*(R + 10) <= 26.4547))
+				&& ((*(R + 17) >= 35.5078 && *(R + 17) <= 35.5856) || (*(R + 17) >= 35.5856))
+				&& ((*(R + 11) >= 22.9748 && *(R + 11) <= 23.0757) || (*(R + 11) <= 22.9748))
+				&& ((*(R + 7) >= 24.8358 && *(R + 7) <= 24.9599) || (*(R + 7) >= 24.9599))
+				&& ((*(R + 0) >= 24.8358 && *(R + 0) <= 24.9599) || (*(R + 0) <= 24.8358))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Disgust(CF = 0.86)" << endl;
+				dlib::rectangle rr(long(0), long(80), long(0), long(80));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[4].append("  0.86")));
+			}
+			//Anger
+			//Rule 25
+			if (
+				((*(R + 7) >= 115.258 && *(R + 7) <= 117.446) || (*(R + 7) >= 117.446))
+				&& ((*(R + 34) >= 17.2653 && *(R + 34) <= 19.2307) || (*(R + 34) <= 17.2653))
+				&& ((*(R + 30) >= 152.184 && *(R + 30) <= 152.257) || (*(R + 30) >= 152.257))
+				&& ((*(R + 36) >= 141.526 && *(R + 36) <= 141.77) || (*(R + 36) >= 141.77))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Anger(CF = 0.93)" << endl;
+				dlib::rectangle rr(long(0), long(100), long(0), long(100));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[5].append("  0.93")));
+			}
+			//Rule 26
+			if (
+				((*(R + 11) >= 122.859 && *(R + 11) <= 124.442) || (*(R + 11) >= 124.442))
+				&& ((*(R + 22) >= 33.0558 && *(R + 22) <= 33.6901) || (*(R + 22) >= 33.6901))
+				&& ((*(R + 8) >= 21.139 && *(R + 8) <= 21.5363) || (*(R + 8) <= 21.139))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Anger(CF = 0.90)" << endl;
+				dlib::rectangle rr(long(0), long(100), long(0), long(100));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[5].append("  0.90")));
+			}
+			//Rule 27
+			if (
+				((*(R + 11) >= 114.76 && *(R + 11) <= 115.918) || (*(R + 11) >= 115.918))
+				&& ((*(R + 34) >= 17.0449 && *(R + 34) <= 17.049) || (*(R + 34) <= 17.0449))
+				&& ((*(R + 39) >= 137.883 && *(R + 39) <= 138.125) || (*(R + 39) <= 137.883))
+				&& ((*(R + 19) >= 86.0353 && *(R + 19) <= 86.1859) || (*(R + 19) >= 86.1859))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Anger(CF = 0.82)" << endl;
+				dlib::rectangle rr(long(0), long(100), long(0), long(100));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[5].append("  0.82")));
+			}
+			//Rule 28
+			if (
+				((*(R + 11) >= 123.048 && *(R + 11) <= 124.509) || (*(R + 11) >= 124.509))
+				&& ((*(R + 51) >= 33.6707 && *(R + 51) <= 33.6995) || (*(R + 51) <= 33.6707))
+				&& ((*(R + 18) >= 52.6819 && *(R + 18) <= 53.231) || (*(R + 18) >= 53.231))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Anger(CF = 0.83)" << endl;
+				dlib::rectangle rr(long(0), long(100), long(0), long(100));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[5].append("  0.83")));
+			}
+			//Rule 29
+			if (
+				((*(R + 34) >= 22.8636 && *(R + 34) <= 23.1986) || (*(R + 34) <= 22.8636))
+				&& ((*(R + 31) >= 10.1964 && *(R + 31) <= 10.3628) || (*(R + 31) <= 10.1964))
+				&& ((*(R + 46) >= 107.21 && *(R + 46) <= 107.447) || (*(R + 46) <= 107.21))
+				&& ((*(R + 47) >= 3.29176 && *(R + 47) <= 3.4244) || (*(R + 47) <= 3.29176))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Anger(CF = 0.82)" << endl;
+				dlib::rectangle rr(long(0), long(100), long(0), long(100));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[5].append("  0.82")));
+			}
+			//Rule 30
+			if (
+				((*(R + 5) >= 68.4986 && *(R + 5) <= 68.8774) || (*(R + 5) <= 68.4986))
+				&& ((*(R + 35) >= 18.6981 && *(R + 35) <= 18.7149) || (*(R + 35) <= 18.6981))
+				&& ((*(R + 13) >= 66.8664 && *(R + 13) <= 67.7345) || (*(R + 13) <= 66.8664))
+				&& ((*(R + 51) >= 39.3543 && *(R + 51) <= 39.4115) || (*(R + 51) <= 39.3543))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Anger(CF = 0.92)" << endl;
+				dlib::rectangle rr(long(0), long(100), long(0), long(100));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[5].append("  0.92")));
+			}
+			//Neutral
+			//Rule 31
+			if (
+				((*(R + 34) >= 26.5651 && *(R + 34) <= 26.7055) || (*(R + 34) <= 26.5651))
+				&& ((*(R + 20) >= 39.2894 && *(R + 20) <= 39.6233) || (*(R + 20) >= 39.6233))
+				&& ((*(R + 45) >= 78.9618 && *(R + 45) <= 789745) || (*(R + 45) <= 78.9618))
+				&& ((*(R + 38) >= 19.9831 && *(R + 38) <= 20.0674) || (*(R + 38) >= 20.0674))
+				&& ((*(R + 8) >= 35.4327 && *(R + 8) <= 36.92) || (*(R + 8) <= 35.4327))
+				&& ((*(R + 30) >= 156.633 && *(R + 30) <= 157.079) || (*(R + 30) <= 156.633))
+				&& ((*(R + 44) >= 38.5527 && *(R + 44) <= 38.6598) || (*(R + 44) >= 38.6598))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Neutral(CF = 0.98)" << endl;
+				dlib::rectangle rr(long(0), long(120), long(0), long(120));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[6].append("  0.98")));
+			}
+			//Rule 32
+			if (
+				((*(R + 35) >= 27.2363 && *(R + 35) <= 27.3464) || (*(R + 35) <= 27.2363))
+				&& ((*(R + 28) >= 38.1572 && *(R + 28) <= 38.6598) || (*(R + 28) >= 38.6598))
+				&& ((*(R + 6) >= 38.9806 && *(R + 6) <= 39.1219) || (*(R + 6) >= 39.1219))
+				&& ((*(R + 50) >= 3.61388 && *(R + 50) <= 3.64164) || (*(R + 50) <= 3.61388))
+				&& ((*(R + 45) >= 79.5199 && *(R + 45) <= 79.6952) || (*(R + 45) <= 79.5199))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Neutral(CF = 0.95)" << endl;
+				dlib::rectangle rr(long(0), long(120), long(0), long(120));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[6].append("  0.95")));
+			}
+			//Rule 33
+			if (
+				((*(R + 34) >= 28.1313 && *(R + 34) <= 28.9551) || (*(R + 34) <= 28.1313))
+				&& ((*(R + 28) >= 38.1572 && *(R + 28) <= 38.4537) || (*(R + 28) >= 38.4537))
+				&& ((*(R + 9) >= 39.7376 && *(R + 9) <= 39.8419) || (*(R + 9) >= 39.8419))
+				&& ((*(R + 19) >= 86.6335 && *(R + 19) <= 87.0364) || (*(R + 19) <= 86.6335))
+				&& ((*(R + 50) >= 3.61207 && *(R + 50) <= 3.62575) || (*(R + 50) <= 3.61207))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Neutral(CF = 0.93)" << endl;
+				dlib::rectangle rr(long(0), long(120), long(0), long(120));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[6].append("  0.93")));
+			}
+			//Rule 34
+			if (
+				((*(R + 34) >= 26.8913 && *(R + 34) <= 26.9486) || (*(R + 34) <= 26.8913))
+				&& ((*(R + 20) >= 33.6901 && *(R + 20) <= 35.8195) || (*(R + 20) >= 35.8195))
+				&& ((*(R + 12) >= 58.3317 && *(R + 12) <= 58.6666) || (*(R + 12) <= 58.3317))
+				&& ((*(R + 22) >= 38.7933 && *(R + 22) <= 39.0939) || (*(R + 22) <= 38.7933))
+				&& ((*(R + 33) >= 152.969 && *(R + 33) <= 152.971) || (*(R + 33) <= 152.969))
+				&& ((*(R + 43) >= 50.7021 && *(R + 43) <= 50.8786) || (*(R + 43) >= 50.8786))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Neutral(CF = 0.94)" << endl;
+				dlib::rectangle rr(long(0), long(120), long(0), long(120));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[6].append("  0.94")));
+			}
+			//Rule 35
+			if (
+				((*(R + 33) >= 88.1516 && *(R + 33) <= 121.909) || (*(R + 33) >= 121.909))
+				&& ((*(R + 28) >= 38.1572 && *(R + 28) <= 38.6238) || (*(R + 28) >= 38.6238))
+				&& ((*(R + 51) >= 35.422 && *(R + 51) <= 36.0181) || (*(R + 51) <= 35.422))
+				&& ((*(R + 43) >= 51.481 && *(R + 43) <= 51.6839) || (*(R + 43) <= 51.481))
+				&& ((*(R + 32) >= 13.4486 && *(R + 32) <= 13.6831) || (*(R + 32) >= 13.6831))
+				&& ((*(R + 26) >= 43.2643 && *(R + 26) <= 43.3844) || (*(R + 26) <= 43.2643))
+				&& ((*(R + 36) >= 146.691 && *(R + 36) <= 146.723) || (*(R + 36) <= 146.691))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Neutral(CF = 0.97)" << endl;
+				dlib::rectangle rr(long(0), long(120), long(0), long(120));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[6].append("  0.97")));
+			}
+			//Rule 36
+			if (
+				((*(R + 35) >= 29.0332 && *(R + 35) <= 32.685) || (*(R + 35) <= 29.0332))
+				&& ((*(R + 8) >= 26.5308 && *(R + 8) <= 26.5651) || (*(R + 8) >= 26.5651))
+				&& ((*(R + 29) >= 85.6013 && *(R + 29) <= 85.9144) || (*(R + 29) <= 85.6013))
+				&& ((*(R + 44) >= 51.953 && *(R + 44) <= 52.0023) || (*(R + 44) <= 51.953))
+				&& ((*(R + 5) >= 75.7986 && *(R + 5) <= 76.0875) || (*(R + 5) <= 75.7986))
+				&& ((*(R + 18) >= 61.0736 && *(R + 18) <= 64.9831) || (*(R + 18) <= 61.0736))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Neutral(CF = 0.95)" << endl;
+				dlib::rectangle rr(long(0), long(120), long(0), long(120));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[6].append("  0.95")));
+			}
+			//Rule 37
+			if (
+				((*(R + 33) >= 118.764 && *(R + 33) <= 120.426) || (*(R + 33) >= 120.426))
+				&& ((*(R + 27) >= 57.0948 && *(R + 27) <= 64.7327) || (*(R + 27) <= 57.0948))
+				&& ((*(R + 49) >= 104.517 && *(R + 49) <= 104.534) || (*(R + 49) >= 104.534))
+				&& ((*(R + 51) >= 33.918 && *(R + 51) <= 34.2595) || (*(R + 51) <= 33.918))
+				&& ((*(R + 5) >= 73.3444 && *(R + 5) <= 73.7261) || (*(R + 5) >= 73.7261))
+				&& ((*(R + 33) >= 136.4 && *(R + 33) <= 149.673) || (*(R + 33) <= 136.4))
+				) {
+				cout << "Timestamp = " << time(&timev) << " " << "Emotions = Neutral(CF = 0.96)" << endl;
+				dlib::rectangle rr(long(0), long(120), long(0), long(120));
+				win.add_overlay(image_window::overlay_rect(rr, rgb_pixel(255, 0, 0), emotions[6].append("  0.96")));
+			}
+			else {
+			//	cout << "No emotions detected" << endl;
+			}
+
+			shapes.push_back(shape);
+
+			// Display it all on the screen
 			win.add_overlay(render_face_detections(shapes));
 			win.add_overlay(render_face_detections_lines(shapes));
-
-			//win.get_display_size(width1,height1);
-
-
-			//cv::Mat d;
-
-			//char *inputModel="face2.tracker";
-			//FACETRACKER::Tracker model(inputModel);
-			//d = model._clm._pdm._M + model._clm._pdm._V * model._clm._plocal;
-
-			const char *fn = "c:\\detected.jpg";
-			dlib::array2d<dlib::rgb_pixel> img_rgb;
-			dlib::load_image(img_rgb, "c:\\loaded.jpg");
-			dlib::array2d<unsigned char> img_gray;
-			//dlib::resize_image(img_rgb, img_gray);
-			//array2d<rgb_pixel> img;
-			//dlib::load_image(img, "c:\\loaded.jpg");
-			//dlib::cv_image<bgr_pixel> cimg(array2d<rgb_pixel> img);
-			dlib::assign_image(img_gray, img_rgb);
-			//std::vector<dlib::full_object_detection> shapes;
-			//dlib::extract_image_chips(cimg, dlib::get_face_chip_details(shapes), img_gray);
-			//img_gray.set_size(600, 800);
-			flip_image_left_right(img_rgb, img_gray);
-			dlib::save_jpeg(img_gray, fn);
 		}
 	}
 	catch (serialization_error& e)
@@ -873,98 +1323,4 @@ int main_Kiavash(int argc, char** argv)
 	{
 		cout << e.what() << endl;
 	}
-
-	//try
-	//{
-	//	// This example takes in a shape model file and then a list of images to
-	//	// process.  We will take these filenames in as command line arguments.
-	//	// Dlib comes with example images in the examples/faces folder so give
-	//	// those as arguments to this program.
-	//	if (argc == 1)
-	//	{
-	//		std::cout << "Call this program like this:" << endl;
-	//		std::cout << "./face_landmark_detection_ex shape_predictor_68_face_landmarks.dat faces/*.jpg" << endl;
-	//		std::cout << "\nYou can get the shape_predictor_68_face_landmarks.dat file from:\n";
-	//		std::cout << "http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2" << endl;
-	//		return 0;
-	//	}
-
-	//	clock_t tStart = clock();
-
-	//	// We need a face detector.  We will use this to get bounding boxes for
-	//	// each face in an image.
-	//	frontal_face_detector detector;
-	//	speedtest___("get_frontal_face_detector: ")
-	//	{
-	//		detector = get_frontal_face_detector();
-	//	}
-	//	// And we also need a shape_predictor.  This is the tool that will predict face
-	//	// landmark positions given an image and face bounding box.  Here we are just
-	//	// loading the model from the shape_predictor_68_face_landmarks.dat file you gave
-	//	// as a command line argument.
-	//	shape_predictor sp;
-	//	speedtest___("deserialize database: ")
-	//	{
-	//		deserialize(argv[1]) >> sp;
-	//	}
-
-	//	image_window win, win_faces;
-	//	// Loop over all the images provided on the command line.
-	//	for (int i = 2; i < argc; ++i)
-	//	{
-	//		std::cout << "processing image " << argv[i] << endl;
-	//		array2d<rgb_pixel> img;
-	//		load_image(img, argv[i]);
-	//		// Make the image larger so we can detect small faces.
-	//		pyramid_up(img);
-
-	//		// Now tell the face detector to give us a list of bounding boxes
-	//		// around all the faces in the image.
-	//		std::vector<dlib::rectangle> dets;
-	//		speedtest___("detect faces: ")
-	//		{
-	//			dets = detector(img);
-	//		}
-	//		std::cout << "Number of faces detected: " << dets.size() << endl;
-
-	//		// Now we will go ask the shape_predictor to tell us the pose of
-	//		// each face we detected.
-	//		std::vector<full_object_detection> shapes;
-	//		speedtest___("detect features: ")
-	//		{
-	//			for (unsigned long j = 0; j < dets.size(); ++j)
-	//			{
-	//				full_object_detection shape = sp(img, dets[j]);
-	//				std::cout << "number of parts: " << shape.num_parts() << endl;
-	//				std::cout << "pixel position of first part:  " << shape.part(0) << endl;
-	//				std::cout << "pixel position of second part: " << shape.part(1) << endl;
-	//				// You get the idea, you can get all the face part locations if
-	//				// you want them.  Here we just store them in shapes so we can
-	//				// put them on the screen.
-	//				shapes.push_back(shape);
-	//			}
-	//		}
-
-	//		// Now let's view our face poses on the screen.
-	//		win.clear_overlay();
-	//		win.set_image(img);
-	//		win.add_overlay(render_face_detections(shapes));
-
-	//		// We can also extract copies of each face that are cropped, rotated upright,
-	//		// and scaled to a standard size as shown here:
-	//		dlib::array<array2d<rgb_pixel> > face_chips;
-	//		dlib::extract_image_chips(img, get_face_chip_details(shapes), face_chips);
-	//		win_faces.set_image(tile_images(face_chips));
-
-	//		std::cout << "Hit enter to process the next image..." << endl;
-	//		std::cin.get();
-	//	}
-	//}
-	//catch (exception& e)
-	//{
-	//	std::cout << "\nexception thrown!" << endl;
-	//	std::cout << e.what() << endl;
-	//}
 }
-
-// ----------------------------------------------------------------------------------------
